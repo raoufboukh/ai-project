@@ -43,7 +43,7 @@ const Description: React.FC<Props> = ({ setPosts }) => {
             handleSearch(e.target.value);
           }}
           placeholder="Search posts..."
-          className="text-white border rounded-lg py-2 px-10 w-full outline-none"
+          className="border rounded-lg py-2 px-10 w-full outline-none"
         />
       </div>
     </div>

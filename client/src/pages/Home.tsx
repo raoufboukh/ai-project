@@ -6,7 +6,7 @@ import { useState } from "react";
 const Home = () => {
   const [posts, setPosts] = useState<any[]>([]);
   return (
-    <section className="bg-secondary text-white py-10 min-h-screen">
+    <section className="py-10 min-h-screen">
       <div className="container">
         <Description setPosts={setPosts} />
         <Posts posts={posts} />
