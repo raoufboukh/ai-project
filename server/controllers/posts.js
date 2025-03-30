@@ -1,28 +1,36 @@
 import cloudinary from "../lib/cloudinary.js";
 import { Post } from "../models/post.model.js";
-import OpenAI from "openai";
+import { OpenAIApi, Configuration } from "openai";
 import dotenv from "dotenv";
 
 dotenv.config();
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
+const config = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(config);
 export const generateImage = async (req, res) => {
   try {
     const { message } = req.body;
-    const gptResponse = await openai.images.generate({
-      model: "dall-e-3",
+    if (!message) {
+      return res.status(400).json({ message: "Message is required" });
+    }
+
+    const response = await openai.createImage({
       prompt: message,
       n: 1,
       size: "1024x1024",
+      response_format: "b64_json",
     });
-    res
-      .status(200)
-      .json({
-        message: "Image generated successfully",
-        data: gptResponse.data.choices[0].text,
-      });
+
+    // Correction: La structure correcte pour accéder à l'image encodée en base64
+    const imageUrl = response.data.data[0].b64_json;
+    res.status(201).json({ imageUrl });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("OpenAI API error:", error.response?.data || error.message);
+    res.status(500).json({
+      message: "Error generating image",
+      error: error.response?.data?.error?.message || error.message,
+    });
   }
 };
 

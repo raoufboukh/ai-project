@@ -7,7 +7,12 @@ import router from "./routers/routers.js";
 const app = express();
 dotenv.config();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST"],
+  })
+);
 app.use(express.json({ limit: "50mb", extended: true }));
 app.use("/posts", router);
 
